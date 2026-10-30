@@ -1,271 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The browser itself enforces: no network requests, no inline scripts, no external files. -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Real-time password strength analyzer and secure hashing tool. Runs entirely in your browser.">
-  <title>Password Strength Analyzer &amp; Secure Hashing Tool</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%90%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="PassGuard: check, create and protect your passwords. Free, private, works in your browser.">
+  <title>PassGuard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">Skip to content</a>
 
-  <div class="wrap">
-    <header class="hero">
-      <h1>Password Strength Analyzer &amp; Secure Hashing Tool</h1>
-      <p>Measure how strong a password really is, then see how it should be stored.
-         Everything runs inside your browser. Nothing you type is sent anywhere.</p>
-    </header>
-
-    <nav class="tabs" role="tablist" aria-label="Tools">
-      <button class="tab" role="tab" id="tab-analyzer" aria-controls="panel-analyzer" aria-selected="true" data-tab="analyzer">Strength Analyzer</button>
-      <button class="tab" role="tab" id="tab-hash" aria-controls="panel-hash" aria-selected="false" tabindex="-1" data-tab="hash">Hashing Tool</button>
-      <button class="tab" role="tab" id="tab-lab" aria-controls="panel-lab" aria-selected="false" tabindex="-1" data-tab="lab">Security Lab</button>
-      <button class="tab" role="tab" id="tab-learn" aria-controls="panel-learn" aria-selected="false" tabindex="-1" data-tab="learn">Learn</button>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#/home">🛡️ Pass<span>Guard</span></a>
+    <nav class="links" aria-label="Main">
+      <a href="#/check">Check</a>
+      <a href="#/generate">Create</a>
+      <a href="#/hash">Hash</a>
+      <a href="#/verify">Verify</a>
+      <a href="#/lab">Demo Lab</a>
+      <a href="#/learn">Learn</a>
     </nav>
+    <button class="btn theme" id="theme-btn" type="button" aria-label="Switch between dark and light mode">☀️ Light</button>
+  </div>
+</header>
 
-    <main id="main">
+<main id="main" class="wrap">
 
-      <!-- ====================== STRENGTH ANALYZER ====================== -->
-      <section class="panel" role="tabpanel" id="panel-analyzer" aria-labelledby="tab-analyzer">
-        <div class="card">
-          <label class="lbl" for="pw-input">Enter a password</label>
-          <div class="input-row">
-            <input id="pw-input" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"
-                   maxlength="128" placeholder="Start typing to see the analysis update live">
-            <button class="btn" id="pw-toggle" type="button" aria-pressed="false">Show</button>
-          </div>
+<!-- ================= HOME ================= -->
+<section id="view-home" class="view">
+  <div class="hero">
+    <h1>Is your password <em>safe?</em></h1>
+    <p class="hero-sub">What would you like to do?</p>
+  </div>
+  <div class="choices">
+    <a class="choice c1" href="#/check"><span class="ico">🔍</span><h2>Check my password</h2><p>See how strong it is and how fast a hacker could crack it.</p><span class="go">Start →</span></a>
+    <a class="choice c2" href="#/generate"><span class="ico">🎲</span><h2>Create a strong password</h2><p>Get a random, hard-to-guess password in one click.</p><span class="go">Start →</span></a>
+    <a class="choice c3" href="#/hash"><span class="ico">🔐</span><h2>Make a hash</h2><p>Turn a password into the scrambled form websites should store.</p><span class="go">Start →</span></a>
+  </div>
+  <div class="more">
+    <a href="#/verify"><strong>Verify a hash</strong><span>Does this password match a stored hash?</span></a>
+    <a href="#/lab"><strong>Demo Lab</strong><span>Watch hashing protect passwords, live.</span></a>
+    <a href="#/learn"><strong>Learn the words</strong><span>Entropy, hash, salt: explained simply.</span></a>
+  </div>
+</section>
 
-          <div class="meter-block">
-            <div class="meter-head">
-              <span class="meter-label" id="meter-label">Waiting for input</span>
-              <span class="meter-score" id="meter-score">0 / 100</span>
-            </div>
-            <div class="meter" id="meter" role="progressbar" aria-label="Password strength"
-                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="meter-fill" id="meter-fill"></div>
-            </div>
-            <p class="muted small" id="meter-note">Type a password above. Your analysis appears here instantly.</p>
-          </div>
-        </div>
+<!-- ================= CHECK ================= -->
+<section id="view-check" class="view" hidden>
+  <h1 class="title">Check my password</h1>
+  <div class="card">
+    <label class="lbl" for="pw-input">Your password</label>
+    <div class="input-row">
+      <input id="pw-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="128">
+      <button class="btn" id="pw-toggle" type="button">Hide</button>
+    </div>
+    <p class="small muted" id="example-note">This is an example. Type over it with your own password.</p>
+    <div class="chips"><span class="small muted">Try:</span>
+      <button class="chip" type="button" data-ex="password123">password123</button>
+      <button class="chip" type="button" data-ex="Tr0ub4dor&amp;3">Tr0ub4dor&amp;3</button>
+      <button class="chip" type="button" data-ex="k9#Vm2$xQ7!pLw4z">k9#Vm2$xQ7!pLw4z</button>
+    </div>
 
-        <div class="tiles">
-          <div class="tile"><div class="k">Length</div><div class="v" id="stat-length">0</div><div class="s">characters</div></div>
-          <div class="tile"><div class="k">Character pool</div><div class="v" id="stat-pool">0</div><div class="s">possible symbols per position</div></div>
-          <div class="tile"><div class="k">Raw entropy</div><div class="v" id="stat-raw">0.0</div><div class="s">bits, if fully random</div></div>
-          <div class="tile"><div class="k">Effective entropy</div><div class="v" id="stat-eff">0.0</div><div class="s">bits, after patterns and words</div></div>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h2 class="h3">Requirements</h2>
-            <ul class="checklist" id="checklist">
-              <li data-check="len12">At least 12 characters</li>
-              <li data-check="lower">Contains a lowercase letter</li>
-              <li data-check="upper">Contains an uppercase letter</li>
-              <li data-check="digit">Contains a number</li>
-              <li data-check="symbol">Contains a symbol</li>
-              <li data-check="notCommon">Not a common password</li>
-              <li data-check="noPattern">No sequences, keyboard runs, repeats or years</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h2 class="h3">Estimated time to crack</h2>
-            <div id="crack-list"></div>
-            <p class="muted small">Average case: half of all possible guesses, based on effective entropy.</p>
-          </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h2 class="h3">What we found</h2>
-            <div id="findings"><p class="muted">Nothing to report yet.</p></div>
-          </div>
-          <div class="card">
-            <h2 class="h3">How to improve it</h2>
-            <div id="tips"><p class="muted">Suggestions appear once you type.</p></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 class="h3">Generate a strong password</h2>
-          <p class="muted small">Uses the browser's cryptographically secure random generator (<code>crypto.getRandomValues</code>).</p>
-          <div class="gen-row">
-            <label for="gen-length">Length: <output id="gen-length-out">16</output></label>
-            <input id="gen-length" type="range" min="8" max="64" value="16">
-          </div>
-          <label class="check"><input type="checkbox" id="gen-symbols" checked> Include symbols</label>
-          <button class="btn primary" id="gen-btn" type="button">Generate and analyze</button>
-        </div>
-      </section>
-
-      <!-- ====================== HASHING TOOL ====================== -->
-      <section class="panel" role="tabpanel" id="panel-hash" aria-labelledby="tab-hash" hidden>
-        <div class="card">
-          <p class="lead">Turn any text into a cryptographic hash using the browser's built-in Web Crypto API.</p>
-          <label class="lbl" for="h-input">Text or password to hash</label>
-          <input id="h-input" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="password">
-
-          <div class="grid-2">
-            <div>
-              <label class="lbl" for="h-algo">Algorithm</label>
-              <select id="h-algo">
-                <option value="MD5">MD5 (broken, demo only)</option>
-                <option value="SHA-1">SHA-1 (deprecated)</option>
-                <option value="SHA-256" selected>SHA-256</option>
-                <option value="SHA-384">SHA-384</option>
-                <option value="SHA-512">SHA-512</option>
-                <option value="SALTED">SHA-256 + random salt</option>
-                <option value="PBKDF2">PBKDF2-SHA256 (salted and slow)</option>
-              </select>
-            </div>
-            <div id="h-iter-wrap" hidden>
-              <label class="lbl" for="h-iter">PBKDF2 iterations</label>
-              <select id="h-iter">
-                <option value="10000">10,000 (weak, legacy)</option>
-                <option value="100000">100,000</option>
-                <option value="600000" selected>600,000 (OWASP recommendation)</option>
-              </select>
-            </div>
-          </div>
-
-          <button class="btn primary" id="h-btn" type="button">Generate hash</button>
-          <div class="banner warn" id="h-error" hidden></div>
-        </div>
-
-        <div class="card" id="h-out" hidden>
-          <div class="hash-head">
-            <strong id="h-title"></strong>
-            <span class="badge" id="h-badge"></span>
-          </div>
-          <div class="codebox">
-            <code id="h-hash"></code>
-            <button class="copy" id="h-copy" type="button">Copy</button>
-          </div>
-          <p class="small" id="h-salt-row" hidden>Random salt (hex): <code id="h-salt"></code></p>
-          <p class="muted small" id="h-meta"></p>
-          <p class="muted" id="h-note"></p>
-        </div>
-
-        <div class="card">
-          <h2 class="h3">Verify a password against a hash</h2>
-          <p class="muted small">Accepts plain hex hashes (MD5, SHA-1, SHA-256, SHA-384, SHA-512) and the salted formats
-             produced above (<code>sha256$salt$hash</code> and <code>pbkdf2_sha256$iterations$salt$hash</code>).</p>
-          <label class="lbl" for="v-hash">Stored hash</label>
-          <textarea id="v-hash" rows="3" spellcheck="false" maxlength="600" placeholder="Paste a hash here"></textarea>
-          <label class="lbl" for="v-pw">Password to check</label>
-          <input id="v-pw" type="password" autocomplete="off" spellcheck="false" maxlength="128">
-          <button class="btn primary" id="v-btn" type="button">Verify</button>
-          <div class="banner" id="v-out" hidden></div>
-        </div>
-      </section>
-
-      <!-- ====================== SECURITY LAB ====================== -->
-      <section class="panel" role="tabpanel" id="panel-lab" aria-labelledby="tab-lab" hidden>
-        <div class="card">
-          <h2 class="h3">1. Why salting matters</h2>
-          <p class="muted">The same password hashed twice. Without a salt the results are identical, so one precomputed
-             rainbow table cracks every user. With a random salt every hash is unique.</p>
-          <label class="lbl" for="salt-pw">Password</label>
-          <input id="salt-pw" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="hunter2">
-          <button class="btn primary" id="salt-btn" type="button">Run salting demo</button>
-          <div class="grid-2 gap-top" id="salt-out" hidden>
-            <div>
-              <p><strong>SHA-256, no salt</strong> <span class="badge red">identical</span></p>
-              <div id="salt-plain"></div>
-            </div>
-            <div>
-              <p><strong>SHA-256, random salt</strong> <span class="badge green">different</span></p>
-              <div id="salt-salted"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 class="h3">2. Avalanche effect</h2>
-          <p class="muted">Change one character and about half of the hash bits flip. Good hashes leak nothing about how
-             close two inputs are.</p>
-          <div class="grid-2">
-            <div>
-              <label class="lbl" for="av-a">Input A</label>
-              <input id="av-a" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="password">
-            </div>
-            <div>
-              <label class="lbl" for="av-b">Input B</label>
-              <input id="av-b" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="passwore">
-            </div>
-          </div>
-          <div class="hexrow"><span class="hexlabel">A</span><code class="hex" id="av-ha"></code></div>
-          <div class="hexrow"><span class="hexlabel">B</span><code class="hex" id="av-hb"></code></div>
-          <div class="banner info" id="av-stat">Computing...</div>
-        </div>
-
-        <div class="card">
-          <h2 class="h3">3. Why password hashes must be slow</h2>
-          <p class="muted">An attacker's speed is limited by how fast one hash can be computed. This test compares plain
-             SHA-256 with PBKDF2 (600,000 iterations) on your device.</p>
-          <button class="btn primary" id="speed-btn" type="button">Run speed test</button>
-          <div class="tiles three gap-top" id="speed-out" hidden>
-            <div class="tile"><div class="k">SHA-256</div><div class="v" id="speed-sha"></div><div class="s">hashes per second</div></div>
-            <div class="tile"><div class="k">PBKDF2, 600k iterations</div><div class="v" id="speed-pbkdf2"></div><div class="s">hashes per second</div></div>
-            <div class="tile"><div class="k">Slowdown for an attacker</div><div class="v" id="speed-ratio"></div><div class="s">times slower per guess</div></div>
-          </div>
-          <p class="muted small" id="speed-note" hidden></p>
-        </div>
-      </section>
-
-      <!-- ====================== LEARN ====================== -->
-      <section class="panel" role="tabpanel" id="panel-learn" aria-labelledby="tab-learn" hidden>
-        <details class="card" open>
-          <summary>Hashing vs encryption vs encoding</summary>
-          <ul>
-            <li><strong>Hashing</strong> is one-way. You cannot recover the input, you can only check a guess against the hash.</li>
-            <li><strong>Encryption</strong> is two-way with a key. Passwords should never be stored encrypted.</li>
-            <li><strong>Encoding</strong> (Base64, URL encoding) only changes the format and provides no secrecy.</li>
-          </ul>
-        </details>
-        <details class="card">
-          <summary>How entropy is calculated</summary>
-          <p><code>entropy = length &times; log2(pool size)</code></p>
-          <p>A 10-character password using all 94 printable ASCII characters has 10 &times; 6.55 = 65.5 bits.
-             Each extra bit doubles the number of guesses needed. This tool then lowers the figure for predictable parts
-             such as <code>1234</code>, <code>qwerty</code>, repeated characters, years and dictionary words.</p>
-        </details>
-        <details class="card">
-          <summary>Salt, pepper and work factor</summary>
-          <ul>
-            <li>A <strong>salt</strong> is a random, non-secret value stored with each hash. It defeats rainbow tables and hides duplicate passwords.</li>
-            <li>A <strong>pepper</strong> is a secret value kept outside the database and mixed into every hash.</li>
-            <li>A <strong>work factor</strong> (iterations, cost) makes each hash slower, which limits how many guesses an attacker can make.</li>
-          </ul>
-        </details>
-        <details class="card">
-          <summary>What should a real website use?</summary>
-          <p>Argon2id (preferred), bcrypt or scrypt, with a per-user salt, hashed on the server. Browsers do not offer
-             Argon2 or bcrypt natively, which is why this demo uses PBKDF2, the strongest password hash built into Web Crypto.</p>
-        </details>
-        <details class="card">
-          <summary>Limitations of this tool</summary>
-          <ul>
-            <li>Entropy is an estimate that treats characters as random, so passphrases of ordinary words are over-estimated.</li>
-            <li>The built-in wordlist is small. Real attackers use lists with billions of entries.</li>
-            <li>No check against personal information such as names or birthdays.</li>
-            <li>Crack-time figures assume fixed attacker speeds that change with hardware.</li>
-          </ul>
-        </details>
-      </section>
-    </main>
-
-    <footer class="foot">
-      <p>Runs entirely in your browser. No data is stored or transmitted. University project.</p>
-    </footer>
+    <div class="meter-head"><span class="meter-label" id="meter-label"></span><span class="meter-score" id="meter-score"></span></div>
+    <div class="meter" id="meter" role="progressbar" aria-label="Password strength" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="meter-fill" id="meter-fill"></div></div>
+    <p class="plain" id="plain"></p>
   </div>
 
-  <script src="script.js" defer></script>
+  <div class="tiles">
+    <div class="tile"><div class="k">Length</div><div class="v" id="stat-length">0</div><div class="s">characters</div></div>
+    <div class="tile"><div class="k">Character pool</div><div class="v" id="stat-pool">0</div><div class="s">kinds of symbols used</div></div>
+    <div class="tile"><div class="k">Raw entropy</div><div class="v" id="stat-raw">0</div><div class="s">bits (if fully random)</div></div>
+    <div class="tile"><div class="k">Real entropy</div><div class="v hi" id="stat-eff">0</div><div class="s">bits (after patterns)</div></div>
+  </div>
+  <p class="small muted note-line">Not sure what "entropy" means? It is a score for unpredictability. <a href="#/learn">Read the simple explanation</a>.</p>
+
+  <div class="grid-2">
+    <div class="card"><h2 class="h3">Checklist</h2>
+      <ul class="checklist" id="checklist">
+        <li data-check="len12">At least 12 characters</li>
+        <li data-check="lower">A lowercase letter</li>
+        <li data-check="upper">An uppercase letter</li>
+        <li data-check="digit">A number</li>
+        <li data-check="symbol">A symbol like ! or #</li>
+        <li data-check="notCommon">Not a common password</li>
+        <li data-check="noPattern">No 1234, qwerty, repeats or years</li>
+      </ul></div>
+    <div class="card"><h2 class="h3">Time a hacker needs to crack it</h2><div id="crack-list"></div>
+      <p class="muted small">Average case. "Fast hash" means a site that stores passwords badly.</p></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><h2 class="h3">What we found</h2><div id="findings"></div></div>
+    <div class="card"><h2 class="h3">How to improve it</h2><div id="tips"></div></div>
+  </div>
+  <div class="card privacy"><strong>🔒 Private by design.</strong> Your password is checked inside this page and never leaves your device. Nothing is saved.</div>
+</section>
+
+<!-- ================= GENERATE ================= -->
+<section id="view-generate" class="view" hidden>
+  <h1 class="title">Create a strong password</h1>
+  <div class="card">
+    <div class="codebox big"><code id="gen-out"></code><button class="copy" id="gen-copy" type="button">Copy</button></div>
+    <div class="meter-head"><span class="meter-label" id="gen-label"></span><span class="meter-score" id="gen-bits"></span></div>
+    <div class="meter"><div class="meter-fill" id="gen-fill"></div></div>
+    <div class="gen-opts">
+      <div><label class="lbl" for="gen-length">Length: <output id="gen-length-out">16</output></label>
+        <input id="gen-length" type="range" min="8" max="64" value="16"></div>
+      <label class="check"><input type="checkbox" id="gen-symbols" checked> Include symbols (! # $ …)</label>
+    </div>
+    <button class="btn primary" id="gen-btn" type="button">🎲 Generate another</button>
+  </div>
+  <div class="card"><h2 class="h3">Good to know</h2>
+    <ul class="plainlist">
+      <li>This password is made by your browser's secure random generator, so no one can predict it.</li>
+      <li>You cannot memorise it. Save it in a <strong>password manager</strong> (your browser's built-in one is fine).</li>
+      <li>Use a <strong>different password for every account</strong>.</li>
+    </ul></div>
+</section>
+
+<!-- ================= HASH ================= -->
+<section id="view-hash" class="view" hidden>
+  <h1 class="title">Make a hash</h1>
+  <p class="lead">A <strong>hash</strong> is a scrambled fingerprint of a password. Websites should store this, never your real password. It cannot be turned back into the password.</p>
+  <div class="card">
+    <label class="lbl" for="h-input">Text or password</label>
+    <input id="h-input" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="MyPassword123">
+    <div class="grid-2">
+      <div><label class="lbl" for="h-algo">Method</label>
+        <select id="h-algo">
+          <option value="MD5">MD5 (broken, demo only)</option>
+          <option value="SHA-1">SHA-1 (outdated)</option>
+          <option value="SHA-256" selected>SHA-256</option>
+          <option value="SHA-384">SHA-384</option>
+          <option value="SHA-512">SHA-512</option>
+          <option value="SALTED">SHA-256 + random salt</option>
+          <option value="PBKDF2">PBKDF2 (salted and slow, best here)</option>
+        </select></div>
+      <div id="h-iter-wrap" hidden><label class="lbl" for="h-iter">PBKDF2 rounds</label>
+        <select id="h-iter"><option value="10000">10,000 (weak)</option><option value="100000">100,000</option><option value="600000" selected>600,000 (recommended)</option></select></div>
+    </div>
+    <button class="btn primary" id="h-btn" type="button">Make hash</button>
+    <div class="banner warn" id="h-error" hidden></div>
+  </div>
+  <div class="card" id="h-out" hidden>
+    <div class="hash-head"><strong id="h-title"></strong><span class="badge" id="h-badge"></span></div>
+    <div class="codebox"><code id="h-hash"></code><button class="copy" id="h-copy" type="button">Copy</button></div>
+    <p class="small" id="h-salt-row" hidden>Random salt: <code id="h-salt"></code></p>
+    <p class="muted small" id="h-meta"></p>
+    <p id="h-note"></p>
+    <a class="btn" href="#/verify">Next: verify a hash →</a>
+  </div>
+</section>
+
+<!-- ================= VERIFY ================= -->
+<section id="view-verify" class="view" hidden>
+  <h1 class="title">Verify a hash</h1>
+  <p class="lead">A hash cannot be reversed. To check a password, we hash your guess the same way and compare. <strong>You do not need to make a hash first</strong>: pick a ready-made sample below, or paste your own.</p>
+  <div class="card">
+    <p class="lbl">Ready-made samples</p>
+    <div class="chips" id="samples"></div>
+    <label class="lbl" for="v-hash">Stored hash</label>
+    <textarea id="v-hash" rows="3" spellcheck="false" maxlength="600"></textarea>
+    <label class="lbl" for="v-pw">Password to test</label>
+    <input id="v-pw" type="text" autocomplete="off" spellcheck="false" maxlength="128">
+    <p class="small muted" id="v-hint"></p>
+    <button class="btn primary" id="v-btn" type="button">Check match</button>
+    <div class="banner" id="v-out" hidden></div>
+  </div>
+  <div class="card"><h2 class="h3">Where is this hash stored?</h2>
+    <p>Nowhere. These samples are written into the page itself, and everything you paste is checked in your browser then forgotten. A real website would keep hashes in its <strong>database</strong> on a <strong>server</strong> (the backend). This tool has no backend because it does not need one.</p></div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section id="view-lab" class="view" hidden>
+  <h1 class="title">Demo Lab</h1>
+  <div class="card intro"><strong>What is this?</strong> Three live experiments that show <em>why</em> good websites store passwords the way they do. Nothing to type: they run on their own.</div>
+
+  <div class="card"><h2 class="h3">1. Salt: why the same password looks different</h2>
+    <p class="muted">A salt is a random extra ingredient. Without it, two users with the same password get the same hash, so one stolen table cracks everyone.</p>
+    <div class="grid-2" id="salt-out"><div><p><strong>No salt</strong> <span class="badge red">identical</span></p><div id="salt-plain"></div></div>
+      <div><p><strong>With salt</strong> <span class="badge green">different</span></p><div id="salt-salted"></div></div></div>
+    <button class="btn" id="salt-btn" type="button">Run again</button></div>
+
+  <div class="card"><h2 class="h3">2. Avalanche: one letter changes everything</h2>
+    <p class="muted">Edit either box. Even a tiny change flips about half of the hash.</p>
+    <div class="grid-2"><div><label class="lbl" for="av-a">Input A</label><input id="av-a" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="password"></div>
+      <div><label class="lbl" for="av-b">Input B</label><input id="av-b" type="text" autocomplete="off" spellcheck="false" maxlength="128" value="passwore"></div></div>
+    <div class="hexrow"><span class="hexlabel">A</span><code class="hex" id="av-ha"></code></div>
+    <div class="hexrow"><span class="hexlabel">B</span><code class="hex" id="av-hb"></code></div>
+    <div class="banner info" id="av-stat">Computing...</div></div>
+
+  <div class="card"><h2 class="h3">3. Speed: why password hashes should be slow</h2>
+    <p class="muted">Hackers win by guessing very fast. A slow hash (PBKDF2) makes every guess expensive. This runs a race on your device.</p>
+    <button class="btn primary" id="speed-btn" type="button">Run the race</button>
+    <div class="tiles three gap-top" id="speed-out" hidden>
+      <div class="tile"><div class="k">Fast (SHA-256)</div><div class="v" id="speed-sha"></div><div class="s">guesses per second</div></div>
+      <div class="tile"><div class="k">Slow (PBKDF2)</div><div class="v" id="speed-pbkdf2"></div><div class="s">guesses per second</div></div>
+      <div class="tile"><div class="k">Hacker is slowed by</div><div class="v hi" id="speed-ratio"></div><div class="s">times</div></div></div>
+    <p class="muted small" id="speed-note" hidden></p></div>
+</section>
+
+<!-- ================= LEARN ================= -->
+<section id="view-learn" class="view" hidden>
+  <h1 class="title">Learn the words</h1>
+  <div class="card tip-card"><h2 class="h3">The 4 habits that matter most</h2>
+    <ol class="plainlist"><li><strong>Long beats clever.</strong> 14+ characters.</li><li><strong>Never reuse</strong> a password.</li><li><strong>Use a password manager.</strong></li><li><strong>Turn on two-step login</strong> (a code on your phone).</li></ol></div>
+
+  <p class="small muted">Tap a word to read its meaning.</p>
+  <details class="card" open><summary>Entropy: "how unpredictable is it?"</summary>
+    <p>Entropy is a score, in <strong>bits</strong>, for how hard something is to guess. Every extra bit <strong>doubles</strong> the guesses a hacker needs. 28 bits is crackable in seconds, 60 bits is hard, 80+ bits is practically safe.</p>
+    <p><code>entropy = length × log2(pool)</code> where the <em>pool</em> is how many different characters you could have used (26 for lowercase only, 94 for all keyboard characters). We then lower it for predictable bits like <code>1234</code>.</p></details>
+  <details class="card"><summary>Hash: a one-way scrambler</summary>
+    <p>A hash turns any text into a fixed-length string of letters and numbers. The same input always gives the same output, but you can never go backward from the output.</p></details>
+  <details class="card"><summary>Hashing, encryption and encoding</summary>
+    <ul><li><strong>Hashing</strong>: one-way. Used to store passwords.</li><li><strong>Encryption</strong>: two-way with a secret key. Not for passwords.</li><li><strong>Encoding</strong> (like Base64): just a format change, no secrecy at all.</li></ul></details>
+  <details class="card"><summary>Salt, pepper and work factor</summary>
+    <ul><li><strong>Salt</strong>: random extra text mixed in per user. Stops one stolen table cracking everybody.</li><li><strong>Pepper</strong>: a secret extra ingredient kept outside the database.</li><li><strong>Work factor</strong>: how many rounds the hash repeats. More rounds means slower guessing.</li></ul></details>
+  <details class="card"><summary>The methods used in PassGuard</summary>
+    <ul><li><strong>MD5, SHA-1</strong>: old and broken. Shown only for comparison.</li><li><strong>SHA-256, 384, 512</strong>: strong fingerprints, but too fast for passwords.</li><li><strong>PBKDF2</strong>: repeats SHA-256 hundreds of thousands of times with a salt. Suitable for passwords.</li><li><strong>Web Crypto API</strong>: the secure toolkit built into your browser that does the maths.</li><li><strong>Rejection sampling and shuffle</strong>: tricks that make the generator perfectly fair and unbiased.</li><li><strong>Brute force</strong>: trying every possibility. Crack times assume this.</li></ul></details>
+  <details class="card"><summary>Is there a backend or database?</summary>
+    <p>No. PassGuard is a "static" site: all the work happens in your browser and nothing is stored. Real websites need a backend to keep hashes in a database. They should use <strong>Argon2id</strong>, <strong>bcrypt</strong> or <strong>scrypt</strong>, which browsers do not offer, so this demo uses PBKDF2.</p></details>
+  <details class="card"><summary>Limits of this tool</summary>
+    <ul><li>Entropy is an estimate.</li><li>The common-password list is small. Real attackers have billions.</li><li>Names and birthdays are not checked.</li><li>Crack times depend on the attacker's hardware.</li></ul></details>
+</section>
+
+</main>
+<footer class="foot wrap"><p>PassGuard · University project</p></footer>
+<script src="engine.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
